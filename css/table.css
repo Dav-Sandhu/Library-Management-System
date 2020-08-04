@@ -1,0 +1,30 @@
+table {
+border: solid 1px black;
+border-collapse: collapse;
+}
+input[type="checkbox"] {
+transform: scale(2);
+}
+th, td {
+border: solid 1px black;
+}
+b {
+font-size: 80;
+font-family: arial;
+color: white;
+-webkit-text-stroke-width: 1px;
+-webkit-text-stroke-color: black;
+}
+tbody {
+background-color: #F6CEE0;
+}
+#title{font-family: arial;
+}
+thead {
+font-family: arial;
+background-color: #ccddee;
+}
+tr:hover {
+color: white;
+background-color: #722750;
+}
