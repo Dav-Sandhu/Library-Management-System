@@ -15,6 +15,14 @@ color: white;
 -webkit-text-stroke-width: 1px;
 -webkit-text-stroke-color: black;
 }
+h1 {
+font-size: 50;
+font-family: times;
+}
+h2 {
+font-size: 25;
+font-family: arial;
+}
 tbody {
 background-color: #F6CEE0;
 }

@@ -3,7 +3,7 @@ function refresh_page(){
 }
 
 function checkout(){
-    
+    document.getElementById("checkout").submit();
 }
 
 function profile(){
