@@ -13,7 +13,7 @@ isset($_POST['password']) &&
 isset($_POST['Identification']) &&
 isset($_POST['user_type'])
 ){
-    $sql = "INSERT INTO users (fname, lname, password, user_type, Identification, record) VALUES" . "(?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO users (fname, lname, password, user_type, Identification, record, status) VALUES" . "(?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
     
     $fname = get_post($conn, 'fname');
@@ -22,8 +22,9 @@ isset($_POST['user_type'])
     $id = get_post($conn, 'Identification');
     $user_type = get_post($conn, 'user_type');
     $record = 0;
+    $status = " ";
     
-    $stmt->bind_param("sssisi", $fname, $lname, $password, $user_type, $id, $record); //s for string and i for integer
+    $stmt->bind_param("sssisis", $fname, $lname, $password, $user_type, $id, $record, $status); //s for string and i for integer
     if ($stmt->execute());
     printf("%s.\n", $stmt->error);
     $stmt->close();
@@ -46,10 +47,10 @@ echo <<<_END
 <img id="icon" src="../pictures/icon.png" width="75" height="75" onclick="refresh_page()"> <b>Library Management System</b>
 <form action="account.php" method="post">
 <h2><u>Create Account</u></h2>
-First Name:     <input type="text" name="fname"> </br>
-Last Name:      <input type="text" name="lname"> </br>
-ID:             <input type="text" name="Identification" maxlength="9"> </br>
-Password:       <input type="password" name="password"> </br>
+First Name:     <input type="text" name="fname" required> </br>
+Last Name:      <input type="text" name="lname" required> </br>
+ID:             <input type="text" name="Identification" maxlength="9" required> </br>
+Password:       <input type="password" name="password" required> </br>
 Select One: <select name="user_type" id="user_type">
 _END;
 
@@ -69,6 +70,12 @@ echo <<<_END
 </select></br>
 <input type="submit" value="Enter">
 </form></center></pre>
+<center>
+<form action="signin.php" method="POST" id="login">
+Already have an account? </br>
+<input type="submit" value="Sign In">
+</form></center>
+
 _END;
 
 function get_post($conn, $var)

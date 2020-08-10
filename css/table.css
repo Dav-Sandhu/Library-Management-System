@@ -23,6 +23,10 @@ h2 {
 font-size: 25;
 font-family: arial;
 }
+h3{
+font-size: 115%;
+font-family: arial;
+}
 tbody {
 background-color: #F6CEE0;
 }

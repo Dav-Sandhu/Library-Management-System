@@ -36,12 +36,12 @@ _END;
 
 echo <<<_END
 <body style="background-color:#CBB5E1;">
-<center>
-<img id="icon" src="../pictures/icon.png" width="75" height="75" onclick="refresh_page()"> <b>Library Management System</b>
+<center> <pre>
+<img id="icon" src="../pictures/icon.png" width="75" height="75" onclick="refresh_page()"> <b>Library Management System</b></pre>
 <form action="signin.php" method="post">
 <h2><u>Sign In</u></h2> </br><pre>
-ID:       <input type="text" name="Identification" maxlength="9"> </br> </br>
-Password: <input type="password" name="password"> </pre></br> </br>
+ID:       <input type="text" name="Identification" maxlength="9" required> </br> </br>
+Password: <input type="password" name="password" required> </pre></br> </br>
 <input type="submit" value="Enter">
 </center>
 </form>

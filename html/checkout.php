@@ -24,14 +24,21 @@ if (count($sel) > 0) {
     
     foreach ($sel as $sel) {
         if ($_POST['remove'] == "Checkout"){
-            $query = "UPDATE library_catalog SET Availability='unavailable' WHERE ISBN='$sel'";
-            $result = $conn->query($query);
-            if (!$result) die ("Database access failed: " . $conn->error);
+            $query0  = "SELECT * FROM library_catalog WHERE ISBN = '$sel'";              
+            $result0 = $conn->query($query0);
+            if (!$result0) die ("Database access failed: " . $conn->error);
+            $available = $result0->fetch_assoc()['Availability'];
             
-            $timestamp = date("Y-m-d H:i:s");
-            $query2 = "INSERT INTO borrow_list(Identification, ISBN, date_borrowed, user_type) VALUES('$id', '$sel', '$timestamp', '$user_type')";
-            $result2 = $conn->query($query2);
-            if (!$result2) die ("Database access failed: " . $conn->error);
+            if ($available == "available"){                                                                     //check if book is available again            
+                $query = "UPDATE library_catalog SET Availability='unavailable' WHERE ISBN='$sel'";             //sets it to unavailable
+                $result = $conn->query($query);
+                if (!$result) die ("Database access failed: " . $conn->error);                          
+            
+                $timestamp = date("Y-m-d H:i:s");                                                               
+                $query2 = "INSERT INTO borrow_list(Identification, ISBN, date_borrowed, user_type) VALUES('$id', '$sel', '$timestamp', '$user_type')";  
+                $result2 = $conn->query($query2);
+                if (!$result2) die ("Database access failed: " . $conn->error);
+            }
         }
         $query3 = "DELETE FROM checkout WHERE ISBN='$sel'";
         $result3 = $conn->query($query3);
@@ -84,7 +91,7 @@ _END;
 _END;
         }
 
-    }else{printf("Your checkout list is empty!\n");}
+    }else{echo "<h1><center> Your checkout list is empty!</center></h1></br>"; }
     
     echo "<center><input type='submit' value='Checkout' name='remove'></center></table></form>";
 }

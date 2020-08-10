@@ -5,7 +5,7 @@
   
   $conn = new mysqli($hn, $un, $pw, $db);
   if ($conn->connect_error) die($conn->connect_error);
-  
+  echo "<html><body>";
   function qheader(){
      echo <<<_END
     <table>
@@ -23,16 +23,41 @@
 _END;
   }
   
-if (isset($_POST['Identification']) && isset($_POST['password']) && isset($_POST['user_type'])){
-    setcookie('Identification', get_post($conn, 'Identification'), time() + 60 * 60 * 24, "/");
+if (isset($_POST['Identification']) && isset($_POST['password'])){
+    $i = get_post($conn, 'Identification');
+    
+    setcookie('Identification', $i, time() + 60 * 60 * 24, "/");
     setcookie('password', get_post($conn, 'password'), time() + 60 * 60 * 24, "/");
-    setcookie('user_type', get_post($conn, 'user_type'), time() + 60 * 60 * 24, "/");
-}
+    
+    $query = "SELECT * FROM users WHERE Identification='$i'";
+        
+    $result = $conn->query($query);
+    if (!$result) die ("Database access failed: " . $conn->error);
+        
+    $ut = $result->fetch_assoc()['user_type'];
+    
+    setcookie('user_type', $ut, time() + 60 * 60 * 24, "/");
+}else if ((!isset($_POST['Identification']) or !isset($_POST['password'])) && (!isset($_COOKIE['Identification']) or !isset($_COOKIE['password']) )){
+    echo <<<_END
+    <form action="account.php" method="POST" id="acc">
+    </form>
+    <script type="text/javascript">
+    document.getElementById("acc").submit();
+    </script>
+_END;
+    }
 
 if (isset($_COOKIE['Identification']) && isset($_COOKIE['password']) && isset($_COOKIE['user_type'])){
     $password = $_COOKIE['password'];
     $id = $_COOKIE['Identification'];
     $user_type = $_COOKIE['user_type'];
+    
+    echo <<<_END
+    <form action="profile.php" id="profile" method="post">
+    <input type="hidden" name="Identification" value=$id>
+    <input type="hidden" name="password" value=$password>
+    </form>
+_END;
     
     echo <<<_END
     <form action="checkout.php" id="checkout" method="post">
@@ -41,17 +66,16 @@ if (isset($_COOKIE['Identification']) && isset($_COOKIE['password']) && isset($_
     <input type="hidden" name="user_type" value=$user_type>
     </form>
 _END;
-}
+}else if (isset($_POST['Identification']) && isset($_POST['password'])){echo "<script>refresh_page()</script>";}
   
   echo <<<_END
     <body style="background-color:#CBB5E1;">
     <form action="library.php" method="post">
     
     <center>
-    <img id="profile" src="../pictures/profile.png" width="125" height="125" style="float: left; onclick="profile()">
-    <img id="icon" src="../pictures/icon.png" width="75" height="75" onclick="refresh_page()"> 
-    <b>Library Management System</b>
-    <img id="check" src="../pictures/checkout.png" width="125" height="125" style="float: right;" onclick="checkout()"></br>
+    <img id="profileBTN" src="../pictures/profile.png" width="125px" height="125px" onclick="profile()" style="float: left;">
+    <img id="icon" src="../pictures/icon.png" width="75px" height="75px" onclick="refresh_page()"> <b>Library Management System</b>
+    <img id="check" src="../pictures/checkout.png" width="125px" height="125px" onclick="checkout()" style="float: right;"></br>
     
     <input type="text" name="srch" style="font-size:16pt;" size="100"><input type="submit" value="search" style="font-size:16pt;">
     </center>
@@ -62,7 +86,7 @@ $sel = (isset($_POST['selected'])) ? $_POST['selected'] : array();
 
 if (count($sel) > 0) { 
     
-    if (!isset($_COOKIE['Identification']) or !isset($_COOKIE['password']) or !isset($_COOKIE['user_type'])){
+    if (!isset($_COOKIE['Identification']) or !isset($_COOKIE['password'])){
         echo <<<_END
         <form action="signin.php" method="POST" id="login">
         </form>
@@ -163,6 +187,7 @@ _END;
   $result->close();
   $conn->close();
 }
+ echo "</html></body>";
 
 function get_post($conn, $var)
 {
